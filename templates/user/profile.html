@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Profile - Workshop System{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="profile-header">
+            <div class="profile-header-content">
+                <div class="profile-avatar">
+                    <!-- BACKEND INTEGRATION REQUIRED: User avatar -->
+                    {% if customer.avatar %}
+                        <img src="{{ customer.avatar.url }}" alt="{{ customer.username }}" class="profile-avatar-image">
+                    {% else %}
+                        <div class="avatar avatar-lg">{{ customer.username|slice:":1"|upper }}</div>
+                    {% endif %}
+                    <label for="avatar-upload" class="profile-avatar-upload">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                            <circle cx="12" cy="13" r="4"></circle>
+                        </svg>
+                    </label>
+                    <input type="file" id="avatar-upload" accept="image/*" style="display: none;">
+                </div>
+                
+                <div class="profile-info">
+                    <h1 class="profile-name">{{ customer.get_full_name|default:customer.username }}</h1>
+                    <p class="profile-username">@{{ customer.username }}</p>
+                    
+                    <div class="profile-stats">
+                        <div class="profile-stat">
+                            <div class="profile-stat-value">
+                                <!-- BACKEND INTEGRATION REQUIRED: Total requests -->
+                                {{ requests.total|default:0 }}
+                            </div>
+                            <div class="profile-stat-label">Requests</div>
+                        </div>
+                        <div class="profile-stat">
+                            <div class="profile-stat-value">
+                                <!-- BACKEND INTEGRATION REQUIRED: Completed requests -->
+                                {{ requests.completed|default:0 }}
+                            </div>
+                            <div class="profile-stat-label">Completed</div>
+                        </div>
+                        <div class="profile-stat">
+                            <div class="profile-stat-value">
+                                <!-- BACKEND INTEGRATION REQUIRED: Account age -->
+                                {% if member_since.days > 0 %}
+                                    {{ member_since.days }} days
+                                {% elif member_since.hours > 0 %}
+                                    {{ member_since.hours }} hours
+                                {% elif member_since.minutes > 0 %}
+                                    {{ member_since.minutes }} minutes
+                                {% elif member_since.seconds > 0 %}
+                                    {{ member_since.seconds }} seconds
+                                {% else %}
+                                    New
+                                {% endif %}
+                            </div>
+                            <div class="profile-stat-label">Member Since</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Information -->
+        <div class="profile-section">
+            <div class="profile-section-header">
+                <h2 class="profile-section-title">Contact Information</h2>
+                <button class="btn btn-secondary btn-sm">Edit</button>
+            </div>
+            
+            <div class="profile-section-content">
+                <div class="profile-info-item">
+                    <div class="profile-info-label">Email</div>
+                    <div class="profile-info-value">{{ customer.email|default:"Not provided" }}</div>
+                </div>
+                
+                <div class="profile-info-item">
+                    <div class="profile-info-label">Phone Number</div>
+                    {% if customer.phone_number %}
+                        <div class="profile-info-value">
+                            {{ customer.phone_number }}
+                            <span class="verification-status verification-status--verified">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                </svg>
+                                Verified
+                            </span>
+                        </div>
+                    {% else %}
+                        <div class="profile-info-value profile-info-value-empty">Phone number not added</div>
+                        <div class="profile-info-action">
+                            <button class="btn btn-primary btn-sm">Add Phone</button>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="profile-info-item">
+                    <div class="profile-info-label">Location</div>
+                    {% if customer.location %}
+                        <div class="profile-info-value">
+                            <div class="location-display">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                </svg>
+                                {{ customer.location }}
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="profile-info-value profile-info-value-empty">Location not set</div>
+                        <div class="profile-info-action">
+                            <button class="btn btn-primary btn-sm">Set Location</button>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Account Details -->
+        <div class="profile-section">
+            <div class="profile-section-header">
+                <h2 class="profile-section-title">Account Details</h2>
+            </div>
+            
+            <div class="profile-section-content">
+                <div class="profile-info-item">
+                    <div class="profile-info-label">Username</div>
+                    <div class="profile-info-value">{{ customer.username }}</div>
+                </div>
+                
+                <div class="profile-info-item">
+                    <div class="profile-info-label">Member Since</div>
+                    <div class="profile-info-value">
+                        <!-- BACKEND INTEGRATION REQUIRED: User registration date -->
+                        {{ customer.date_joined|date:"F d, Y"|default:"Not available" }}
+                    </div>
+                </div>
+                
+                <div class="profile-info-item">
+                    <div class="profile-info-label">Account Status</div>
+                    <div class="profile-info-value">
+                        <span class="status-badge status-badge--confirmed">Active</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="profile-section">
+            <div class="profile-section-header">
+                <h2 class="profile-section-title">Quick Actions</h2>
+            </div>
+            
+            <div class="profile-section-content">
+                <a href="{% url 'settings' %}" class="btn btn-secondary" style="width: 100%;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px;">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                    Account Settings
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/profile.js' %}"></script>
+{% endblock %}
