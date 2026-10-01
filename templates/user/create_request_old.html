@@ -1,0 +1,234 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Create Request - Workshop System{% endblock %}
+
+{% block content %}
+    <div class="container container-narrow">
+        <div class="card">
+            <div class="card-header">
+                <h1 class="card-title">Create Service Request</h1>
+                <p>Describe your issue and submit a service request</p>
+            </div>
+            
+            <div class="card-body">
+                {% if form.non_field_errors %}
+                    <div class="auth-error" style="margin-bottom: var(--spacing-lg);">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <form method="post" enctype="multipart/form-data" class="form" id="requestForm">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label for="{{ form.title.id_for_label }}" class="form-label">
+                            {{ form.title.label }}
+                            <span class="form-label-required">*</span>
+                        </label>
+                        <input 
+                            type="{{ form.title.field.widget.input_type|default:'text' }}"
+                            id="{{ form.title.id_for_label|default:'title' }}"
+                            name="{{ form.title.name|default:'title' }}"
+                            class="form-input {% if form.title.errors %}form-input--error{% endif %}"
+                            placeholder="Brief summary of the issue"
+                            required
+                            value="{{ form.title.value|default:'' }}"
+                        >
+                        {% if form.title.help_text %}
+                            <small class="form-hint">{{ form.title.help_text }}</small>
+                        {% endif %}
+                        {% for error in form.title.errors %}
+                            <div class="form-error">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.description.id_for_label }}" class="form-label">
+                            {{ form.description.label }}
+                            <span class="form-label-required">*</span>
+                        </label>
+                        <textarea 
+                            id="{{ form.description.id_for_label|default:'description' }}"
+                            name="{{ form.description.name|default:'description' }}"
+                            class="form-textarea {% if form.description.errors %}form-textarea--error{% endif %}"
+                            placeholder="Describe the problem in detail. Include any relevant information about when the issue occurs, what you were doing, and any error messages."
+                            required
+                        >{{ form.problem_description.value|default:'' }}</textarea>
+                        {% if form.problem_description.help_text %}
+                            <small class="form-hint">{{ form.description.help_text }}</small>
+                        {% endif %}
+                        {% for error in errors %}
+                            <div class="form-error">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="form-row form-row-2">
+                        <div class="form-group">
+                            <label for="{{ form.category.id_for_label }}" class="form-label">
+                                {{ form.category.label|default:"Category" }}
+                            </label>
+                            <select 
+                                id="{{ form.category.id_for_label|default:'category' }}"
+                                name="{{ form.category.name|default:'category' }}"
+                                class="form-select {% if form.category.errors %}form-select--error{% endif %}"
+                            >
+                                <option value="">Select a category</option>
+                                <option value="hardware">Hardware</option>
+                                <option value="software">Software</option>
+                                <option value="network">Network</option>
+                                <option value="other">Other</option>
+                                {# BACKEND INTEGRATION REQUIRED: Dynamic categories from backend #}
+                            </select>
+                            {% for error in form.category.errors %}
+                                <div class="form-error">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="{{ form.priority.id_for_label }}" class="form-label">
+                                {{ form.priority.label|default:"Priority" }}
+                            </label>
+                            <select 
+                                id="{{ form.priority.id_for_label|default:'priority' }}"
+                                name="{{ form.priority.name|default:'priority' }}"
+                                class="form-select {% if form.priority.errors %}form-select--error{% endif %}"
+                            >
+                                <option value="normal">Normal</option>
+                                <option value="high">High</option>
+                                <option value="urgent">Urgent</option>
+                                {# BACKEND INTEGRATION REQUIRED: Dynamic priorities from backend #}
+                            </select>
+                            {% for error in form.priority.errors %}
+                                <div class="form-error">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.location.id_for_label }}" class="form-label">
+                            {{ form.location.label|default:"Location" }}
+                        </label>
+                        <input 
+                            type="text"
+                            id="{{ form.location.id_for_label|default:'location' }}"
+                            name="{{ form.location.name|default:'location' }}"
+                            class="form-input {% if form.location.errors %}form-input--error{% endif %}"
+                            placeholder="Enter your location or address"
+                            value="{{ form.location.value|default:'' }}"
+                        >
+                        <small class="form-hint">This helps us provide better service</small>
+                        {% for error in form.location.errors %}
+                            <div class="form-error">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            Attachments (Optional)
+                        </label>
+                        <div class="form-file">
+                            <input type="file" id="attachments" name="attachments" class="form-file-input" multiple accept="image/*,.pdf,.doc,.docx">
+                            <label for="attachments" class="form-file-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="17 8 12 3 7 8"></polyline>
+                                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                                </svg>
+                                <span class="form-file-label-text">Click to upload or drag and drop</span>
+                                <span class="form-file-label-hint">PNG, JPG, PDF up to 10MB</span>
+                            </label>
+                        </div>
+                        <div id="fileList" class="mt-sm"></div>
+                        {# BACKEND INTEGRATION REQUIRED: File upload handling #}
+                    </div>
+                    
+                    <div class="form-actions">
+                        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary" id="submitBtn">
+                            <span class="btn-text">Submit Request</span>
+                            <span class="btn-loading" style="display: none;">
+                                <span class="spinner spinner-sm"></span>
+                                Submitting...
+                            </span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/forms.js' %}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('requestForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const btnLoading = submitBtn.querySelector('.btn-loading');
+            const fileInput = document.getElementById('attachments');
+            const fileList = document.getElementById('fileList');
+            
+            // Form submission handling
+            form.addEventListener('submit', function(e) {
+                // Show loading state
+                btnText.style.display = 'none';
+                btnLoading.style.display = 'inline-flex';
+                submitBtn.disabled = true;
+                
+                // Form will submit normally
+                // BACKEND INTEGRATION REQUIRED: AJAX submission if desired
+            });
+            
+            // File upload preview
+            if (fileInput) {
+                fileInput.addEventListener('change', function(e) {
+                    const files = e.target.files;
+                    fileList.innerHTML = '';
+                    
+                    if (files.length > 0) {
+                        const list = document.createElement('div');
+                        list.style.display = 'flex';
+                        list.style.flexDirection = 'column';
+                        list.style.gap = 'var(--spacing-xs)';
+                        
+                        for (let i = 0; i < files.length; i++) {
+                            const file = files[i];
+                            const item = document.createElement('div');
+                            item.style.display = 'flex';
+                            item.style.alignItems = 'center';
+                            item.style.gap = 'var(--spacing-xs)';
+                            item.style.padding = 'var(--spacing-xs) var(--spacing-sm)';
+                            item.style.backgroundColor = 'var(--color-background-secondary)';
+                            item.style.borderRadius = 'var(--radius-sm)';
+                            item.style.fontSize = 'var(--font-size-sm)';
+                            
+                            item.innerHTML = `
+                                <svg style="width: 16px; height: 16px; color: var(--color-primary);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                                    <polyline points="13 2 13 9 20 9"></polyline>
+                                </svg>
+                                <span>${file.name}</span>
+                                <span style="color: var(--color-text-tertiary); margin-left: auto;">${(file.size / 1024).toFixed(1)} KB</span>
+                            `;
+                            
+                            list.appendChild(item);
+                        }
+                        
+                        fileList.appendChild(list);
+                    }
+                });
+            }
+        });
+    </script>
+{% endblock %}

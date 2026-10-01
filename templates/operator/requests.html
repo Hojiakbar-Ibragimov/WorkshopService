@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Operator Requests - Workshop System{% endblock %}
+
+{% block navbar %}
+<!-- No navbar on operator panel -->
+{% endblock %}
+
+{% block bottom_nav %}
+<!-- No navbar on operator panel -->
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="requests-header">
+            <h1 class="requests-title">
+                {% if current_status %}
+                    {{ current_status|title }} Requests
+                {% else %}
+                    All Requests
+                {% endif %}
+            </h1>
+            <div class="requests-actions">
+                <a href="{% url 'operator_dashboard' %}" class="btn btn-secondary">Dashboard</a>
+            </div>
+        </div>
+
+        <!-- Status Filter Tabs -->
+        <div class="profile-tabs" style="margin-bottom: var(--spacing-lg);">
+            <a href="{% url 'operator_requests' %}" class="profile-tab {% if not current_status %}active{% endif %}">All</a>
+            <a href="{% url 'operator_requests' %}?status=new" class="profile-tab {% if current_status == 'new' %}active{% endif %}">New</a>
+            <a href="{% url 'operator_requests' %}?status=contacting" class="profile-tab {% if current_status == 'contacting' %}active{% endif %}">Contacting</a>
+            <a href="{% url 'operator_requests' %}?status=confirmed" class="profile-tab {% if current_status == 'confirmed' %}active{% endif %}">Confirmed</a>
+            <a href="{% url 'operator_requests' %}?status=in_progress" class="profile-tab {% if current_status == 'in_progress' %}active{% endif %}">In Progress</a>
+            <a href="{% url 'operator_requests' %}?status=completed" class="profile-tab {% if current_status == 'completed' %}active{% endif %}">Completed</a>
+            <a href="{% url 'operator_requests' %}?status=rejected" class="profile-tab {% if current_status == 'rejected' %}active{% endif %}">Rejected</a>
+            <a href="{% url 'operator_requests' %}?status=cancelled" class="profile-tab {% if current_status == 'cancelled' %}active{% endif %}">Cancelled</a>
+        </div>
+
+        <!-- Requests List -->
+        {% if requests %}
+            <div class="requests-list">
+                {% for request in requests %}
+                    <div class="request-card">
+                        <div class="request-card-header">
+                            <div>
+                                <div class="request-card-id">#{{ request.id }}</div>
+                                <h3 class="request-card-title">{{ request.title|default:"Service Request" }}</h3>
+                            </div>
+                            {% include 'components/status_badge.html' with status=request.status %}
+                        </div>
+                        
+                        <p class="request-card-description">{{ request.problem_description|truncatewords:20|default:"No description provided" }}</p>
+                        
+                        <div class="request-card-meta">
+                            <div class="request-card-meta-item">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                                {{ request.author_username|default:"Unknown" }}
+                            </div>
+                            <div class="request-card-meta-item">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                                {{ request.created_at|date:"M d, Y" }}
+                            </div>
+                            {% if request.priority %}
+                                <div class="request-card-meta-item">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                    </svg>
+                                    {{ request.priority|title }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+
+                        <form>
+                            {% csrf_token %}
+
+                            <div class="request-card-footer">
+                                <span class="request-card-date">{{ request.created_at|date:"g:i A" }}</span>
+                                <div class="request-card-actions">
+                                    <a href="{% url 'operator_specific_request' request.id %}" class="btn btn-secondary btn-sm">View Details</a>
+                                    <!-- Status-dependent actions -->
+
+                                    {% if request.status|lower == 'new' %}
+                                    <button formmethod="post" formaction="{% url 'contacting' request.id %}"
+                                            class="btn btn-primary btn-sm">
+                                        Contact
+                                    </button>
+
+                                    {% elif request.status|lower == 'contacting' %}
+                                    <button formmethod="post" formaction="{% url 'confirm_request' request.id %}"
+                                            class="btn btn-success btn-sm">
+                                        Confirm
+                                    </button>
+
+                                    <button formmethod="post" formaction="{% url 'reject_request' request.id %}"
+                                            class="btn btn-danger btn-sm">
+                                        Reject
+                                    </button>
+                                    {% elif request.status|lower == 'confirmed' %}
+                                    <button formmethod="post" formaction="{% url 'start_process' request.id %}"
+                                            class="btn btn-primary btn-sm">
+                                        Start process
+                                    </button>
+                                    {% elif request.status|lower == 'in_progress' %}
+                                    <button formmethod="post" formaction="{% url 'complete_process' request.id %}"
+                                            class="btn btn-success btn-sm">
+                                        Complete
+                                    </button>
+                                    {% endif %}
+                                    {# BACKEND INTEGRATION REQUIRED: Status update functionality #}
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                {% endfor %}
+            </div>
+            
+            {% if has_more %}
+                <div class="load-more">
+                    <button class="btn btn-secondary" id="loadMoreBtn">Load More</button>
+                    {# BACKEND INTEGRATION REQUIRED: Pagination #}
+                </div>
+            {% endif %}
+        {% else %}
+            {% include 'components/empty_state.html' with title="No requests found" description="There are no requests in this category." %}
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/requests.css' %}">
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/requests.js' %}"></script>
+{% endblock %}

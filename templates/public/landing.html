@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Workshop System - Service Request Platform{% endblock %}
+
+{% block body_class %}landing-page{% endblock %}
+
+{% block navbar %}
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="{% url 'landing' %}" class="navbar-brand">Workshop System</a>
+            <div class="navbar-menu">
+                <a href="#features" class="navbar-link">Features</a>
+                <a href="#how-it-works" class="navbar-link">How It Works</a>
+                <a href="{% url 'login' %}" class="navbar-link">Login</a>
+                <a href="{% url 'signup' %}" class="navbar-link navbar-link-primary">Sign Up</a>
+            </div>
+            <button class="navbar-toggle" id="navbarToggle" aria-label="Toggle navigation">
+                <span class="navbar-toggle-icon"></span>
+                <span class="navbar-toggle-icon"></span>
+                <span class="navbar-toggle-icon"></span>
+            </button>
+        </div>
+    </nav>
+{% endblock %}
+
+{% block content %}
+    <div class="landing-container">
+        <!-- Hero Section -->
+        <section class="landing-hero">
+            <div class="container">
+                <h1>Professional Workshop Services at Your Fingertips</h1>
+                <p>Submit service requests, track progress, and get your devices repaired quickly and efficiently. Simple, reliable, and transparent.</p>
+                <div class="landing-hero-actions">
+                    <a href="{% url 'signup' %}" class="btn btn-secondary" style="background: white; color: var(--color-primary);">Get Started</a>
+                    <a href="{% url 'login' %}" class="btn btn-outline" style="border-color: white; color: white;">Login</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="landing-section">
+            <h2 class="landing-section-title">Why Choose Us?</h2>
+            <div class="landing-features">
+                <div class="landing-feature">
+                    <div class="landing-feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="landing-feature-title">Fast Service</h3>
+                    <p class="landing-feature-description">Quick turnaround times with real-time status updates on your service requests.</p>
+                </div>
+                <div class="landing-feature">
+                    <div class="landing-feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="landing-feature-title">Secure & Reliable</h3>
+                    <p class="landing-feature-description">Your data and devices are handled with the highest security standards.</p>
+                </div>
+                <div class="landing-feature">
+                    <div class="landing-feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                    </div>
+                    <h3 class="landing-feature-title">Real-time Tracking</h3>
+                    <p class="landing-feature-description">Track your service request status from submission to completion.</p>
+                </div>
+                <div class="landing-feature">
+                    <div class="landing-feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="landing-feature-title">Easy Communication</h3>
+                    <p class="landing-feature-description">Direct communication with service technicians throughout the process.</p>
+                </div>
+                <div class="landing-feature">
+                    <div class="landing-feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                    </div>
+                    <h3 class="landing-feature-title">Simple Process</h3>
+                    <p class="landing-feature-description">Submit your request in minutes with our straightforward form.</p>
+                </div>
+                <div class="landing-feature">
+                    <div class="landing-feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="landing-feature-title">Customer Satisfaction</h3>
+                    <p class="landing-feature-description">We prioritize your satisfaction with quality service and support.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section id="how-it-works" class="landing-section" style="background-color: var(--color-background-secondary);">
+            <h2 class="landing-section-title">How It Works</h2>
+            <div class="landing-features">
+                <div class="landing-feature">
+                    <div class="landing-feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="16"></line>
+                            <line x1="8" y1="12" x2="16" y2="12"></line>
+                        </svg>
+                    </div>
+                    <h3 class="landing-feature-title">1. Submit Request</h3>
+                    <p class="landing-feature-description">Describe your issue and submit a service request through our platform.</p>
+                </div>
+                <div class="landing-feature">
+                    <div class="landing-feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="landing-feature-title">2. We Contact You</h3>
+                    <p class="landing-feature-description">Our team will reach out to discuss details and schedule service.</p>
+                </div>
+                <div class="landing-feature">
+                    <div class="landing-feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="landing-feature-title">3. Service Performed</h3>
+                    <p class="landing-feature-description">Expert technicians diagnose and repair your device professionally.</p>
+                </div>
+                <div class="landing-feature">
+                    <div class="landing-feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                    </div>
+                    <h3 class="landing-feature-title">4. Complete</h3>
+                    <p class="landing-feature-description">Receive your device back and enjoy the results of our service.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="landing-section">
+            <div class="card" style="text-align: center; padding: var(--spacing-2xl);">
+                <h2 style="margin-bottom: var(--spacing-md);">Ready to Get Started?</h2>
+                <p style="margin-bottom: var(--spacing-xl);">Create an account today and submit your first service request.</p>
+                <div style="display: flex; gap: var(--spacing-md); justify-content: center; flex-wrap: wrap;">
+                    <a href="{% url 'signup' %}" class="btn btn-primary">Sign Up Free</a>
+                    <a href="{% url 'login' %}" class="btn btn-secondary">Login to Account</a>
+                </div>
+            </div>
+        </section>
+    </div>
+{% endblock %}
+
+{% block bottom_nav %}
+    <!-- No bottom nav on landing page -->
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/authentication.css' %}">
+{% endblock %}

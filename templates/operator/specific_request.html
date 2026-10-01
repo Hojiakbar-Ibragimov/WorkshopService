@@ -1,0 +1,314 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Request #{{ request.id }} - Operator - Workshop System{% endblock %}
+
+{% block navbar %}
+<!-- No navbar on operator panel -->
+{% endblock %}
+
+{% block bottom_nav %}
+<!-- No navbar on operator panel -->
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="request-detail">
+            <div class="request-detail-header">
+                <div>
+                    <div class="request-detail-id">#{{ request.id }}</div>
+                    <h1 class="request-detail-title">{{ request.title|default:"Service Request" }}</h1>
+                </div>
+                <div class="request-detail-status">
+                    {% include 'components/status_badge.html' with status=request.status %}
+                </div>
+            </div>
+
+            <!-- Customer Information -->
+            <div class="request-detail-section">
+                <h2 class="request-detail-section-title">Customer Information</h2>
+                <div class="request-detail-meta">
+                    <div class="request-detail-meta-item">
+                        <div class="request-detail-meta-label">Name</div>
+                        <div class="request-detail-meta-value">{{ request.customer.get_full_name|default:request.customer.username }}</div>
+                    </div>
+                    
+                    <div class="request-detail-meta-item">
+                        <div class="request-detail-meta-label">Username</div>
+                        <div class="request-detail-meta-value">@{{ request.customer.username }}</div>
+                    </div>
+                    
+                    <div class="request-detail-meta-item">
+                        <div class="request-detail-meta-label">Email</div>
+                        <div class="request-detail-meta-value">
+                            <a href="mailto:{{ request.customer.email }}" class="text-primary">{{ request.customer.email|default:"Not provided" }}</a>
+                        </div>
+                    </div>
+                    
+                    <div class="request-detail-meta-item">
+                        <div class="request-detail-meta-label">Phone</div>
+                        <div class="request-detail-meta-value">
+                            {% if request.customer.phone_number %}
+                                {{ request.customer.phone_number }}
+                            {% else %}
+                                <span class="text-tertiary">Not provided</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="request-detail-meta-item">
+                        <div class="request-detail-meta-label">Location</div>
+                        <div class="request-detail-meta-value">
+                            {% if request.location %}
+                                <div class="location-display">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                        <circle cx="12" cy="10" r="3"></circle>
+                                    </svg>
+                                    {{ request.location }}
+                                </div>
+                            {% else %}
+                                <span class="text-tertiary">Not specified</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Request Details -->
+            <div class="request-detail-section">
+                <h2 class="request-detail-section-title">Request Details</h2>
+                
+                <div class="request-detail-content">
+                    {{ request.problem_description|default:"No description provided." }}
+                </div>
+                
+                <div class="request-detail-meta" style="margin-top: var(--spacing-lg);">
+<!--                    <div class="request-detail-meta-item">-->
+<!--                        <div class="request-detail-meta-label">Category</div>-->
+<!--                        <div class="request-detail-meta-value">-->
+<!--                            {% if request.category %}-->
+<!--                                {{ request.category|title }}-->
+<!--                            {% else %}-->
+<!--                                <span class="text-tertiary">Not specified</span>-->
+<!--                            {% endif %}-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    -->
+<!--                    <div class="request-detail-meta-item">-->
+<!--                        <div class="request-detail-meta-label">Priority</div>-->
+<!--                        <div class="request-detail-meta-value">-->
+<!--                            {% if request.priority %}-->
+<!--                                <span class="tag">{{ request.priority|title }}</span>-->
+<!--                            {% else %}-->
+<!--                                <span class="text-tertiary">Normal</span>-->
+<!--                            {% endif %}-->
+<!--                        </div>-->
+<!--                    </div>-->
+                    
+                    <div class="request-detail-meta-item">
+                        <div class="request-detail-meta-label">Created</div>
+                        <div class="request-detail-meta-value">
+                            {{ request.created_at|date:"F d, Y g:i A"|default:"Not available" }}
+                        </div>
+                    </div>
+                    
+                    <div class="request-detail-meta-item">
+                        <div class="request-detail-meta-label">Last Updated</div>
+                        <div class="request-detail-meta-value">
+                            {{ request.updated_at|date:"F d, Y g:i A"|default:"Not available" }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attachments -->
+            {% if request.attachments %}
+                <div class="request-detail-section">
+                    <h2 class="request-detail-section-title">Attachments</h2>
+                    <div class="requests-list">
+                        {% for attachment in request.attachments %}
+                            <div class="request-card" style="cursor: default;">
+                                <div class="request-card-header">
+                                    <div class="request-card-title">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 20px; height: 20px; margin-right: var(--spacing-sm);">
+                                            <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                                            <polyline points="13 2 13 9 20 9"></polyline>
+                                        </svg>
+                                        {{ attachment.name }}
+                                    </div>
+                                    <a href="{{ attachment.url }}" class="btn btn-secondary btn-sm" download>Download</a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Timeline -->
+            <div class="request-detail-section">
+                <h2 class="request-detail-section-title">Activity Timeline</h2>
+                <div class="request-timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-title">Request Created</div>
+                            <div class="timeline-description">Customer submitted the service request.</div>
+                            <div class="timeline-time">{{ request.created_at|date:"F d, Y g:i A"|default:"Not available" }}</div>
+                        </div>
+                    </div>
+                    
+                    {% if request.status|lower == 'contacting' %}
+                        <div class="timeline-item">
+                            <div class="timeline-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                                </svg>
+                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Contacting Customer</div>
+                                <div class="timeline-description">Operator is reaching out to discuss the request.</div>
+                                <div class="timeline-time">{{ request.updated_at|date:"F d, Y g:i A"|default:"Not available" }}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                     {% if request.status|lower == 'confirmed' %}
+                        <div class="timeline-item">
+                            <div class="timeline-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                </svg>
+                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Request Confirmed</div>
+                                <div class="timeline-description">Request has been confirmed and scheduled.</div>
+                                <div class="timeline-time">{{ request.updated_at|date:"F d, Y g:i A"|default:"Not available" }}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    {% if request.status|lower == 'in_progress' %}
+                        <div class="timeline-item">
+                            <div class="timeline-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+                                </svg>
+                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">In Progress</div>
+                                <div class="timeline-description">Technicians are working on the request.</div>
+                                <div class="timeline-time">{{ request.updated_at|date:"F d, Y g:i A"|default:"Not available" }}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    {% if request.status|lower == 'completed' %}
+                        <div class="timeline-item">
+                            <div class="timeline-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                </svg>
+                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Completed</div>
+                                <div class="timeline-description">Request has been completed successfully.</div>
+                                <div class="timeline-time">{{ request.updated_at|date:"F d, Y g:i A"|default:"Not available" }}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    {% if request.status|lower == 'rejected' %}
+                        <div class="timeline-item">
+                            <div class="timeline-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="15" y1="9" x2="9" y2="15"></line>
+                                    <line x1="9" y1="9" x2="15" y2="15"></line>
+                                </svg>
+                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Request Rejected</div>
+                                <div class="timeline-description">Request could not be processed.</div>
+                                <div class="timeline-time">{{ request.updated_at|date:"F d, Y g:i A"|default:"Not available" }}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    {% if request.status|lower == 'cancelled' %}
+                        <div class="timeline-item">
+                            <div class="timeline-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Request Cancelled</div>
+                                <div class="timeline-description">Request was cancelled by customer.</div>
+                                <div class="timeline-time">{{ request.updated_at|date:"F d, Y g:i A"|default:"Not available" }}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    {# BACKEND INTEGRATION REQUIRED: Dynamic timeline from backend activity log #}
+                </div>
+            </div>
+
+            <!-- Status-dependent actions -->
+            <form>
+                {% csrf_token %}
+
+                <div class="request-actions">
+                    <a href="{% url 'operator_requests' %}" class="btn btn-secondary">Back to Requests</a>
+
+                    {% if request.status|lower == 'new' %}
+                        <button formmethod="post" formaction="{% url 'contacting' request.id %}"
+                                class="btn btn-primary">
+                            Contact
+                        </button>
+                    {% elif request.status|lower == 'contacting' %}
+                        <button formmethod="post" formaction="{% url 'confirm_request' request.id %}"
+                                class="btn btn-success">
+                            Confirm
+                        </button>
+                        <button formmethod="post" formaction="{% url 'reject_request' request.id %}"
+                                class="btn btn-danger">
+                            Reject
+                        </button>
+                    {% elif request.status|lower == 'confirmed' %}
+                        <button formmethod="post" formaction="{% url 'start_process' request.id %}"
+                                class="btn btn-primary">
+                            Start Process
+                        </button>
+                    {% elif request.status|lower == 'in_progress' %}
+                        <button formmethod="post" formaction="{% url 'complete_process' request.id %}"
+                                class="btn btn-success">
+                            Complete
+                        </button>
+                    {% elif request.status|lower == 'completed' or request.status|lower == 'rejected' or request.status|lower == 'cancelled' %}
+                        <div class="text-tertiary" style="margin-left: auto;">
+                            This request is in a terminal state and cannot be modified.
+                        </div>
+                    {% endif %}
+                    {# BACKEND INTEGRATION REQUIRED: Status update functionality #}
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/requests.css' %}">
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/requests.js' %}"></script>
+{% endblock %}

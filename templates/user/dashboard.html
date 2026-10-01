@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Dashboard - Workshop System{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Welcome back, {{ user.username|default:"User" }}!</h1>
+            <p class="dashboard-subtitle">Here's an overview of your service requests</p>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="dashboard-quick-actions">
+            <a href="{% url 'create_request' %}" class="quick-action-card">
+                <div class="quick-action-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                </div>
+                <div class="quick-action-content">
+                    <h3 class="quick-action-title">Create Request</h3>
+                    <p class="quick-action-description">Submit a new service request</p>
+                </div>
+            </a>
+            
+            <a href="{% url 'requests' %}" class="quick-action-card">
+                <div class="quick-action-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                    </svg>
+                </div>
+                <div class="quick-action-content">
+                    <h3 class="quick-action-title">View Requests</h3>
+                    <p class="quick-action-description">See all your service requests</p>
+                </div>
+            </a>
+            
+            <a href="{% url 'profile' %}" class="quick-action-card">
+                <div class="quick-action-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+                <div class="quick-action-content">
+                    <h3 class="quick-action-title">My Profile</h3>
+                    <p class="quick-action-description">Manage your account settings</p>
+                </div>
+            </a>
+            
+            <a href="{% url 'settings' %}" class="quick-action-card">
+                <div class="quick-action-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                </div>
+                <div class="quick-action-content">
+                    <h3 class="quick-action-title">Settings</h3>
+                    <p class="quick-action-description">Configure your preferences</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="dashboard-stats">
+            <div class="stat-card">
+                <div class="stat-card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                    </svg>
+                </div>
+                <div class="stat-card-value">
+                    <!-- BACKEND INTEGRATION REQUIRED: Total requests count -->
+                    {{ requests.total|default:0 }}
+                </div>
+                <div class="stat-card-label">Total Requests</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                </div>
+                <div class="stat-card-value">
+                    <!-- BACKEND INTEGRATION REQUIRED: Active requests count -->
+                    {{ requests.active|default:0 }}
+                </div>
+                <div class="stat-card-label">Active Requests</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                </div>
+                <div class="stat-card-value">
+                    <!-- BACKEND INTEGRATION REQUIRED: Completed requests count -->
+                    {{ requests.completed|default:0 }}
+                </div>
+                <div class="stat-card-label">Completed</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                </div>
+                <div class="stat-card-value">
+                    <!-- BACKEND INTEGRATION REQUIRED: Pending requests count -->
+                    {{ requests.pending|default:0 }}
+                </div>
+                <div class="stat-card-label">Pending</div>
+            </div>
+        </div>
+
+        <!-- Recent Requests Section -->
+<!--        <div class="dashboard-section">-->
+<!--            <div class="dashboard-section-header">-->
+<!--                <h2 class="dashboard-section-title">Recent Requests</h2>-->
+<!--                <a href="{% url 'requests' %}" class="dashboard-section-link">View All</a>-->
+<!--            </div>-->
+<!--            -->
+<!--            &lt;!&ndash; BACKEND INTEGRATION REQUIRED: Recent requests list &ndash;&gt;-->
+<!--            {% if recent_requests %}-->
+<!--                <div class="requests-list">-->
+<!--                    {% for request in recent_requests %}-->
+<!--                        <a href="{% url 'specific_request' request.id %}" class="request-card">-->
+<!--                            <div class="request-card-header">-->
+<!--                                <div>-->
+<!--                                    <div class="request-card-id">#{{ request.id }}</div>-->
+<!--                                    <h3 class="request-card-title">{{ request.title|default:"Service Request" }}</h3>-->
+<!--                                </div>-->
+<!--                                {% include 'components/status_badge.html' with status=request.status %}-->
+<!--                            </div>-->
+<!--                            <p class="request-card-description">{{ request.problem_description|truncatewords:15|default:"No description provided" }}</p>-->
+<!--                            <div class="request-card-footer">-->
+<!--                                <span class="request-card-date">{{ request.created_at|date:"M d, Y" }}</span>-->
+<!--                            </div>-->
+<!--                        </a>-->
+<!--                    {% endfor %}-->
+<!--                </div>-->
+<!--            {% else %}-->
+<!--                {% include 'components/empty_state.html' with title="No requests yet" description="You haven't submitted any service requests. Create your first request to get started." action_url='request/send' action_text='Create Request' %}-->
+<!--            {% endif %}-->
+<!--        </div>-->
+    </div>
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/requests.css' %}">
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/requests.js' %}"></script>
+{% endblock %}
