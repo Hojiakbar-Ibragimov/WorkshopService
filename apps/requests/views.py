@@ -1,14 +1,11 @@
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, Http404
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
 
 from .forms import RequestForm
 from .service import service
 from apps import exceptions as e
 from apps.requests import exceptions as r_e
-from django.views import generic
-from . models import Request
 
 
 @login_required(login_url='login')
