@@ -10,6 +10,7 @@ from apps.requests import exceptions as r_e
 from django.views import generic
 from . models import Request
 
+
 @login_required(login_url='login')
 def requests(request):
     user = request.user
@@ -120,24 +121,6 @@ def create_request(request):
     )
 
 
-class RequestCreation(generic.CreateView):
-    model = Request
-    form_class = RequestForm
-    template_name = 'user/create_request.html'
-    success_url = reverse_lazy('requests')
-
-    def get_initial(self):
-
-        if not self.request.user.is_authenticated:
-            raise Http404
-
-        if self.request.user.is_authenticated:
-            if self.request.user.is_superuser:
-                raise Http404
-
-    def form_valid(self, form):
-        super().form_valid(form)
-
 def cancel_request(request, request_id):
     user = request.user
 
@@ -159,8 +142,7 @@ def cancel_request(request, request_id):
         except r_e.AuthorizationError:
             raise Http404
 
-        except r_e.NotAllowedRequestStatus as error:
-            print(error)
+        except r_e.NotAllowedRequestStatus:
             raise Http404
 
         return redirect(
