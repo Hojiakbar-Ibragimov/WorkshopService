@@ -14,3 +14,4 @@ class Request(models.Model):
     updated_at = models.DateTimeField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
     status = models.CharField(max_length=15, default='NEW')
+    completed_at = models.DateTimeField(null=True, blank=True)

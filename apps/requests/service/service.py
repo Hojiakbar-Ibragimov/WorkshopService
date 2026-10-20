@@ -320,6 +320,17 @@ def update_request_status(*, pk, to_status):
         status=to_status
     )
 
+    if check_status_completed(to_status):
+        Request.objects.filter(
+            pk=pk
+        ).update(
+            is_active=is_active,
+            status=to_status.upper(),
+            updated_at=get_current_time(),
+            completed_at=get_current_time()
+        )
+        return
+
     Request.objects.filter(
         pk=pk
     ).update(
@@ -330,6 +341,12 @@ def update_request_status(*, pk, to_status):
     return {
         'message': f'Status updated to: {to_status.upper()}'
     }
+
+def check_status_completed(status):
+    if status.lower() == 'completed':
+        return True
+
+    return False
 
 
 def status_editing_rule(*, request_id, to_status):
